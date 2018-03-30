@@ -53,6 +53,28 @@ module SdNotify
     notify(WATCHDOG, unset_env)
   end
 
+  # Detect whether the service manager expects regular keep-alive watchdog
+  # notification events.
+  #
+  # @param unset_env [Boolean]
+  #
+  # @return [Integer, nil] timeout in µs for the watchdog logic or nil if
+  #   the system manager doesn't expect watchdog notification.
+  #
+  # @see https://www.freedesktop.org/software/systemd/man/sd_watchdog_enabled.html
+  def self.watchdog_enabled(unset_env=false)
+    wd_usec, wd_pid = ENV.values_at('WATCHDOG_USEC', 'WATCHDOG_PID')
+
+    if unset_env
+      ENV.delete('WATCHDOG_USEC')
+      ENV.delete('WATCHDOG_PID')
+    end
+
+    if wd_usec && (wd_pid.nil? || wd_pid.to_i == $$)
+      wd_usec.to_i
+    end
+  end
+
   def self.fdstore(unset_env=false)
     notify(FDSTORE, unset_env)
   end

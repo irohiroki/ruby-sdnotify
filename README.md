@@ -27,7 +27,7 @@ and run `bundle install`
 ## Usage
 
 The [API](http://www.rubydoc.info/github/agis/ruby-sdnotify) is mostly tied to
-the official implementation, therefore refer to the [sd_notify(3) man pages](https://www.freedesktop.org/software/systemd/man/sd_notify.html)
+the official implementation, therefore refer to the [sd_notify(3)](https://www.freedesktop.org/software/systemd/man/sd_notify.html) and [sd_watchdog_enabled(3)](https://www.freedesktop.org/software/systemd/man/sd_watchdog_enabled.html) man pages
 for detailed description of how the notification mechanism works.
 
 An example (assuming the program shipped as a systemd service):
@@ -45,6 +45,7 @@ sum = 0
   sleep 1 # perform some work
   sum += 1
   SdNotify.status("{sum} jobs completed")
+  SdNotify.watchdog if SdNotify.watchdog_enabled
 end
 
 puts "Finished working, shutting down..."
